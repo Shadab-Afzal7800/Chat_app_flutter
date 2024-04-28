@@ -1,4 +1,5 @@
 import 'package:chat_app_flutter/constants/colors.dart';
+import 'package:chat_app_flutter/pages/create_account.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,44 +17,49 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
           child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 40),
-        child: const Center(
+        child: Center(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Text(
+                const Text(
                   'Chat App',
                   style: TextStyle(
                       color: kPrimaryColor,
                       fontSize: 50,
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 30),
-                TextField(
+                const SizedBox(height: 30),
+                const TextField(
                   decoration: InputDecoration(labelText: 'Email'),
                 ),
-                SizedBox(height: 30),
-                TextField(
+                const SizedBox(height: 30),
+                const TextField(
                   obscureText: true,
                   decoration: InputDecoration(labelText: 'Password'),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 CupertinoButton(
-                  onPressed: null,
+                  onPressed: () {},
                   color: kPrimaryColor,
-                  child: Text('Login'),
+                  child: const Text('Login'),
                 )
               ],
             ),
           ),
         ),
       )),
-      bottomNavigationBar: const Row(
+      bottomNavigationBar: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Don't have an account?"),
+          const Text("Don't have an account?"),
           CupertinoButton(
-              onPressed: null,
-              child: Text(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CreateAccountPage()));
+              },
+              child: const Text(
                 'Sign Up',
                 style: TextStyle(color: kPrimaryColor),
               ))
