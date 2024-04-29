@@ -1,5 +1,6 @@
 import 'package:chat_app_flutter/constants/colors.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class CompleteProfileScreen extends StatefulWidget {
@@ -10,6 +11,29 @@ class CompleteProfileScreen extends StatefulWidget {
 }
 
 class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
+  void showPhotoOptions() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Upload Profile Picture'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.photo_album),
+                  title: Text('Upload from gallery'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.camera),
+                  title: Text('Take Picture'),
+                )
+              ],
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +51,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               height: 20,
             ),
             CupertinoButton(
-              onPressed: () {},
+              onPressed: () {
+                showPhotoOptions();
+              },
               child: CircleAvatar(
                 radius: 60,
                 child: Icon(
