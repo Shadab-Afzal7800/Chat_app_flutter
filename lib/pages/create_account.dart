@@ -1,7 +1,9 @@
+import 'package:chat_app_flutter/models/user_model.dart';
 import 'package:chat_app_flutter/pages/complete_profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../constants/colors.dart';
 
 class CreateAccountPage extends StatefulWidget {
@@ -12,6 +14,46 @@ class CreateAccountPage extends StatefulWidget {
 }
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController cPasswordController = TextEditingController();
+  void checkValues() {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String cPassword = cPasswordController.text.trim();
+
+    if (email == '' || password == '' || cPassword == '') {
+      print("Please fill all the fields");
+    } else if (password != cPassword) {
+      print('Passwords do not match');
+    } else {
+      signUp(email, password);
+    }
+  }
+
+  void signUp(String email, String password) async {
+    UserCredential? credentials;
+
+    try {
+      credentials = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (ex) {
+      print(ex.toString());
+    }
+    if (credentials != null) {
+      String uid = credentials.user!.uid;
+
+      UserModel newUser =
+          UserModel(uid: uid, email: email, fullname: "", profilepic: "");
+
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .set(newUser.toMap())
+          .then((value) => print("new user created"));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,23 +65,26 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             child: Column(
               children: [
                 const Text(
-                  'Chat App',
+                  'Telegram Clone',
                   style: TextStyle(
                       color: kPrimaryColor,
-                      fontSize: 50,
+                      fontSize: 44,
                       fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 30),
-                const TextField(
+                TextField(
+                  controller: emailController,
                   decoration: InputDecoration(labelText: 'Email'),
                 ),
                 const SizedBox(height: 30),
-                const TextField(
+                TextField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(labelText: 'Password'),
                 ),
                 const SizedBox(height: 30),
-                const TextField(
+                TextField(
+                  controller: cPasswordController,
                   obscureText: true,
                   decoration: InputDecoration(labelText: 'Password'),
                 ),
@@ -48,13 +93,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 ),
                 CupertinoButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CompleteProfileScreen()));
+                    checkValues();
                   },
                   color: kPrimaryColor,
-                  child: const Text('Login'),
+                  child: const Text('SignUp'),
                 )
               ],
             ),
