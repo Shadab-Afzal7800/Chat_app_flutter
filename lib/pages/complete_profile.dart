@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:chat_app_flutter/pages/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -109,6 +110,10 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
         .set(widget.userModel.toMap())
         .then((value) {
       log('Data uploaded!');
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return HomeScreen(
+            userModel: widget.userModel, firebaseUser: widget.firebaseUser);
+      }));
     });
   }
 
@@ -145,6 +150,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               ),
             ),
             TextField(
+              controller: fullnameController,
               decoration: InputDecoration(label: Text('Full Name')),
             ),
             SizedBox(
@@ -152,7 +158,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
             ),
             CupertinoButton(
               child: Text('Done'),
-              onPressed: () {},
+              onPressed: () {
+                checkValues();
+              },
               color: kPrimaryColor,
             )
           ],
