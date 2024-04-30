@@ -17,6 +17,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController cPasswordController = TextEditingController();
+
   void checkValues() {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
@@ -50,7 +51,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           .collection("users")
           .doc(uid)
           .set(newUser.toMap())
-          .then((value) => print("new user created"));
+          .then((value) {
+        print("New user created");
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return CompleteProfileScreen(
+              userModel: newUser, firebaseUser: credentials!.user!);
+        }));
+      });
     }
   }
 
@@ -65,7 +72,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             child: Column(
               children: [
                 const Text(
-                  'Telegram Clone',
+                  'Chat App',
                   style: TextStyle(
                       color: kPrimaryColor,
                       fontSize: 44,

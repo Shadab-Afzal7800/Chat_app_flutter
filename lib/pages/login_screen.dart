@@ -16,6 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
   void checkValues() {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
@@ -56,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 const Text(
-                  'Telegram Clone',
+                  'Chat App',
                   style: TextStyle(
                       color: kPrimaryColor,
                       fontSize: 44,
