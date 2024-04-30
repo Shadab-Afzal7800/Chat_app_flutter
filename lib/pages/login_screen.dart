@@ -1,13 +1,17 @@
-import 'package:chat_app_flutter/constants/colors.dart';
-import 'package:chat_app_flutter/models/user_model.dart';
-import 'package:chat_app_flutter/pages/create_account.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chat_app_flutter/constants/colors.dart';
+import 'package:chat_app_flutter/models/user_model.dart';
+import 'package:chat_app_flutter/pages/create_account.dart';
+import 'package:chat_app_flutter/pages/home_page.dart';
+
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -41,8 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
       DocumentSnapshot usedData =
           await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
-      UserModel.fromMap(usedData.data() as Map<String, dynamic>);
+      UserModel userModel =
+          UserModel.fromMap(usedData.data() as Map<String, dynamic>);
       print('Login successful');
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return HomeScreen(
+            userModel: userModel, firebaseUser: credentials!.user!);
+      }));
     }
   }
 

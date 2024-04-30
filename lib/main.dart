@@ -14,7 +14,8 @@ void main() async {
               apiKey: "AIzaSyBNW-OBoyPIFzg9Ep9hWSgSK57Z6eVi5g4",
               appId: "1:388792275228:android:921e3de3a620303c662ad9",
               messagingSenderId: '388792275228',
-              projectId: "chat-app-flutter-e7a6c"))
+              projectId: "chat-app-flutter-e7a6c",
+              storageBucket: "chat-app-flutter-e7a6c.appspot.com"))
       : await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginScreen(),
     );
