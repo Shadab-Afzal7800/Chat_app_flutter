@@ -40,8 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
       String uid = credentials.user!.uid;
       DocumentSnapshot usedData =
           await FirebaseFirestore.instance.collection('users').doc(uid).get();
-      UserModel userModel =
-          UserModel.fromMap(usedData.data() as Map<String, dynamic>);
+
+      UserModel.fromMap(usedData.data() as Map<String, dynamic>);
       print('Login successful');
     }
   }
