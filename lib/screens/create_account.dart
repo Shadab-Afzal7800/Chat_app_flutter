@@ -1,7 +1,5 @@
-import 'package:chat_app_flutter/models/user_model.dart';
-import 'package:chat_app_flutter/pages/complete_profile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat_app_flutter/services/firebase_services/create_user_services.dart';
+import 'package:chat_app_flutter/widgets/custom_alert_dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
@@ -17,6 +15,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController cPasswordController = TextEditingController();
+  CreateUserServices createUserServices = CreateUserServices();
 
   void checkValues() {
     String email = emailController.text.trim();
@@ -24,40 +23,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     String cPassword = cPasswordController.text.trim();
 
     if (email == '' || password == '' || cPassword == '') {
-      print("Please fill all the fields");
+      CustomDialog.showAlertDialog(context, "", "Please fill all the fields");
     } else if (password != cPassword) {
-      print('Passwords do not match');
+      CustomDialog.showAlertDialog(context, "", "Passwords do not match");
     } else {
-      signUp(email, password);
-    }
-  }
-
-  void signUp(String email, String password) async {
-    UserCredential? credentials;
-
-    try {
-      credentials = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (ex) {
-      print(ex.toString());
-    }
-    if (credentials != null) {
-      String uid = credentials.user!.uid;
-
-      UserModel newUser =
-          UserModel(uid: uid, email: email, fullname: "", profilepic: "");
-
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(uid)
-          .set(newUser.toMap())
-          .then((value) {
-        print("New user created");
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return CompleteProfileScreen(
-              userModel: newUser, firebaseUser: credentials!.user!);
-        }));
-      });
+      createUserServices.signUp(context, email, password);
     }
   }
 
@@ -81,19 +51,20 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 const SizedBox(height: 30),
                 TextField(
                   controller: emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: const InputDecoration(labelText: 'Email'),
                 ),
                 const SizedBox(height: 30),
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: const InputDecoration(labelText: 'Password'),
                 ),
                 const SizedBox(height: 30),
                 TextField(
                   controller: cPasswordController,
                   obscureText: true,
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration:
+                      const InputDecoration(labelText: 'Confirm Password'),
                 ),
                 const SizedBox(
                   height: 30,

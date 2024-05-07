@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class UIHelper {
+class CustomDialog {
   static void showLoadingDialog(BuildContext context, String title) {
     AlertDialog loadingDialog = AlertDialog(
       content: Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(
+            const CircularProgressIndicator(),
+            const SizedBox(
               height: 10,
             ),
             Text(title)
@@ -35,7 +35,7 @@ class UIHelper {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text("OK"))
+            child: const Text("OK"))
       ],
     );
 

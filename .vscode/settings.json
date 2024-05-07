@@ -1,3 +1,4 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "cmake.sourceDirectory": "C:/Users/shada/OneDrive/Documents/FlutterProjects/chat_app_flutter/windows/flutter"
 }

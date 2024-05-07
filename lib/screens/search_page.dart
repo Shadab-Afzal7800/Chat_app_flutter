@@ -1,12 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:chat_app_flutter/main.dart';
 import 'package:chat_app_flutter/models/chatroom_model.dart';
 import 'package:chat_app_flutter/models/user_model.dart';
-import 'package:chat_app_flutter/pages/chatroom_page.dart';
+import 'package:chat_app_flutter/screens/chatroom_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
@@ -46,7 +47,9 @@ class _SearchPageState extends State<SearchPage> {
           participants: {
             widget.userModel.uid.toString(): true,
             targetUser.uid.toString(): true
-          });
+          },
+          createdon: DateTime.now(),
+          users: [widget.userModel.uid.toString(), targetUser.uid.toString()]);
       await FirebaseFirestore.instance
           .collection("chatrooms")
           .doc(newChatRoom.chatroomid)
@@ -62,27 +65,27 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Start a new chat"),
+        title: const Text("Start a new chat"),
         centerTitle: true,
       ),
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
             TextField(
               controller: searchController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Search by email",
                 prefixIcon: Icon(Icons.search),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
-            CupertinoButton(
-              child: Text("Search"),
+            ElevatedButton(
+              child: const Text("Search"),
               onPressed: () {
                 if (searchController.text.isNotEmpty) {
                   setState(() {});
@@ -131,15 +134,15 @@ class _SearchPageState extends State<SearchPage> {
                         subtitle: Text(searchedUser.email!),
                       );
                     } else {
-                      return Text("No results found");
+                      return const Text("No results found");
                     }
                   } else if (snapshot.hasError) {
-                    return Text("An error occurred");
+                    return const Text("An error occurred");
                   } else {
-                    return Text("No results found");
+                    return const Text("No results found");
                   }
                 } else {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
               },
             ),

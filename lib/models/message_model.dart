@@ -17,7 +17,11 @@ class MessageModel {
     text = map["text"];
     seen = map["seen"];
     messageId = map["messageId"];
-    createdon = map["createdon"].toDate;
+    try {
+      createdon = DateTime.parse(map["createdon"] as String);
+    } catch (e) {
+      return;
+    }
   }
 
   Map<String, dynamic> toMap() {

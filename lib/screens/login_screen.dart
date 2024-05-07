@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat_app_flutter/services/firebase_services/login_services.dart';
+import 'package:chat_app_flutter/widgets/custom_alert_dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chat_app_flutter/constants/colors.dart';
-import 'package:chat_app_flutter/models/user_model.dart';
-import 'package:chat_app_flutter/pages/create_account.dart';
-import 'package:chat_app_flutter/pages/home_page.dart';
+import 'package:chat_app_flutter/screens/create_account.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
@@ -20,38 +18,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  LoginServices loginServices = LoginServices();
 
   void checkValues() {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     if (email.isEmpty || password.isEmpty) {
-      print('Please fill all the fields');
+      CustomDialog.showAlertDialog(context, '', "Please fill all the fields");
     } else {
-      login(email, password);
-    }
-  }
-
-  void login(String email, String password) async {
-    UserCredential? credentials;
-    try {
-      credentials = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (ex) {
-      print(ex.code.toString());
-    }
-
-    if (credentials != null) {
-      String uid = credentials.user!.uid;
-      DocumentSnapshot usedData =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
-
-      UserModel userModel =
-          UserModel.fromMap(usedData.data() as Map<String, dynamic>);
-      print('Login successful');
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return HomeScreen(
-            userModel: userModel, firebaseUser: credentials!.user!);
-      }));
+      loginServices.login(context, email, password);
     }
   }
 
@@ -75,13 +50,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 30),
                 TextField(
                   controller: emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: const InputDecoration(labelText: 'Email'),
                 ),
                 const SizedBox(height: 30),
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: const InputDecoration(labelText: 'Password'),
                 ),
                 const SizedBox(height: 30),
                 CupertinoButton(

@@ -1,7 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:chat_app_flutter/pages/home_page.dart';
+import 'package:chat_app_flutter/widgets/custom_alert_dialogs.dart';
+import 'package:chat_app_flutter/screens/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -40,8 +41,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   void cropImage(XFile file) async {
     CroppedFile? croppedImage = await ImageCropper().cropImage(
         sourcePath: file.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressQuality: 50);
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 10);
 
     if (croppedImage != null) {
       setState(() {
@@ -50,12 +51,12 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     }
   }
 
-  void showPhotoOptions() {
+  void showPhotoOptionsDialog() {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Upload Profile Picture'),
+            title: const Text('Upload Profile Picture'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -64,16 +65,16 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                     Navigator.pop(context);
                     selectImage(ImageSource.gallery);
                   },
-                  leading: Icon(Icons.photo_album),
-                  title: Text('Upload from gallery'),
+                  leading: const Icon(Icons.photo_album),
+                  title: const Text('Upload from gallery'),
                 ),
                 ListTile(
                   onTap: () {
                     Navigator.pop(context);
                     selectImage(ImageSource.camera);
                   },
-                  leading: Icon(Icons.camera),
-                  title: Text('Take Picture'),
+                  leading: const Icon(Icons.camera),
+                  title: const Text('Take Picture'),
                 )
               ],
             ),
@@ -84,13 +85,14 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   void checkValues() {
     String fullname = fullnameController.text.trim();
     if (fullname.isEmpty || imageFile == null) {
-      print("Please fill all the fields");
+      CustomDialog.showAlertDialog(context, "", "Please fill all the fields");
     } else {
       uploadData();
     }
   }
 
   void uploadData() async {
+    CustomDialog.showLoadingDialog(context, "Uploading");
     UploadTask uploadTask = FirebaseStorage.instance
         .ref("profilepictures")
         .child(widget.userModel.uid.toString())
@@ -109,8 +111,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
         .doc(widget.userModel.uid)
         .set(widget.userModel.toMap())
         .then((value) {
-      log('Data uploaded!');
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //data uploaded
+      Navigator.popUntil(context, (route) => route.isFirst);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return HomeScreen(
             userModel: widget.userModel, firebaseUser: widget.firebaseUser);
       }));
@@ -130,19 +133,19 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             CupertinoButton(
               onPressed: () {
-                showPhotoOptions();
+                showPhotoOptionsDialog();
               },
               child: CircleAvatar(
                 radius: 60,
                 backgroundImage:
                     imageFile != null ? FileImage(imageFile!) : null,
                 child: imageFile == null
-                    ? Icon(
+                    ? const Icon(
                         Icons.person,
                         size: 70,
                       )
@@ -151,17 +154,17 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
             ),
             TextField(
               controller: fullnameController,
-              decoration: InputDecoration(label: Text('Full Name')),
+              decoration: const InputDecoration(label: Text('Full Name')),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             CupertinoButton(
-              child: Text('Done'),
               onPressed: () {
                 checkValues();
               },
               color: kPrimaryColor,
+              child: const Text('Done'),
             )
           ],
         ),
